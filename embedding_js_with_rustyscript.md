@@ -149,4 +149,4 @@ Our static module was able to be imported for use by another JS module, and the 
 ## Conclusion
 Embedding a JS or TS component into Rust does not have to be difficult or time consuming. By leveraging API wrappers like rustyscript we can include a full-fledged runtime with very little learning curve or time investment. 
 
-This example and more can be found on [rustyscript's github repository](https://github.com/rscarson/rustyscript)
+This example's source code and more can be found on [rustyscript's github repository](https://github.com/rscarson/rustyscript)
