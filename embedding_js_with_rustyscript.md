@@ -78,7 +78,7 @@ let value:i64 = module.call("getValue", json_args!())
 
 But one ES module does not an ecosystem make. So let's try it again, but this time we will add more options to our runtime, and manage our errors a little better.
 
-Let's embed out TS module into the executable directly; after all, it is a very small file we will always need - why take the extra hit from filesystem overhead!
+Let's embed our TS module into the executable directly; after all, it is a very small file we will always need - why take the extra hit from filesystem overhead!
 
 ```rust
 use rustyscript::{module, StaticModule};
@@ -146,7 +146,7 @@ let final_value: String = runtime.get_value(&use_value_handle, "final_value")?;
 
 We load our new module from the filesystem - the handle that `load_module` returns is used to give context to future calls.
 
-We use the returned handle to extract the const that it exports, and then we tell the compiler we'd like it as a string:
+We use the returned handle to extract the const that it exports, and then we tell the compiler we'd like it as a string.
 
 Finally, we can check that we received back the value we expected:
 
