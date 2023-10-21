@@ -3,7 +3,9 @@
 If you've got a need to integrate a scripted component into your latest project - do not fret; it does not need to be a complicated procedure.
 
 ## The Javascript v8 runtime
-The v8 runtime has been brought to the Rust ecosystem by the [Deno project](https://deno.com/). The v8 engine it relies on, however, and by extension the Deno core itself come equipped with their fair share of pitfalls and gotchas.
+The v8 runtime has been brought to the Rust ecosystem by the [Deno project](https://deno.com/).
+
+The v8 engine it relies on, however, and by extension the Deno core itself come equipped with their fair share of pitfalls and gotchas.
 
 Enter rustyscript - a Deno API wrapper designed to abstract away the v8 engine details, and allow you to operate directly on Rust types when working with javascript modules.
 
@@ -45,9 +47,11 @@ let mut module = rustyscript::import("get_value.ts")
   .expect("could not import the module!");
 ```
 
-No really, that's it - a working JS runtime with our shiny new module imported and ready to go. We could improve this with better error management - most rustyscript functions return a `rustyscript::Error` that will hold more details of what went wrong.
+No really, that's it - a working JS runtime with our shiny new module imported and ready to go. 
 
-We can now call our module's API at will.
+We could improve this with better error management - most rustyscript functions return a `rustyscript::Error` with details of what went wrong.
+
+But, we can now call our module's API at will.
 
 First we set up our module's internal value by calling `setValue(5)` - the `::<Undefined>` here just means we don't care about what the function returns:
 
@@ -61,7 +65,9 @@ module.call::<Undefined>("setValue", json_args!(5))
 `json_args!` is a macro taking in a comma separated list of Rust primitives to
 turn them into serialized values we can send to javascript.
 
-Now we can get our value back out. Here we do care about what type we get, so we tell the compiler to deserialize the JS function's return value as an i64. We will get an `Error::JsonDecode` if the wrong type is returned by javascript:
+Now we can get our value back out. 
+
+Since now we do care about what type we get, we tell the compiler to deserialize the JS function's return value as an i64. We will get an `Error::JsonDecode` if the wrong type is returned by javascript:
 
 ```rust
 let value:i64 = module.call("getValue", json_args!())
@@ -69,9 +75,10 @@ let value:i64 = module.call("getValue", json_args!())
 ```
 
 ## A more comprehensive example
+
 But one ES module does not an ecosystem make. So let's try it again, but this time we will add more options to our runtime, and manage our errors a little better.
 
-This time we will embed this module into the executable directly. After all, it is a very small file we will always need - why take the extra overhead for the filesystem!
+Let's embed out TS module into the executable directly; after all, it is a very small file we will always need - why take the extra hit from filesystem overhead!
 
 ```rust
 use rustyscript::{module, StaticModule};
@@ -105,11 +112,7 @@ fn main() -> Result<(), Error> {
   })?;
 ```
 
-Now we can include our static module - `to_module()` is needed to pull into into a form we can use.
-
-The `call_entrypoint` function will call our module's setValue function for us - the function was found and a reference to it stored in advance on load so that this function call can be made with less overhead.
-
-Just like before, `::<Undefined` means we do not care if the function returns a result.
+Now we can include our static module:
 
 ```rust
   let module_handle = runtime.load_module(&API_MODULE.to_module())?;
@@ -119,7 +122,11 @@ Just like before, `::<Undefined` means we do not care if the function returns a 
 }
 ```
 
-Now that we have a runtime, let us add a second module that can make use of it! We shall name this file `use_value.js`
+The `call_entrypoint` function will call our module's setValue function for us - the function was found and a reference to it stored in advance on load so that this function call can be made with less overhead.
+
+Just like before, `::<Undefined` means we do not care if the function returns a result.
+
+Now that we have a runtime, let's add a second module that can make use of it! We'll name this file `use_value.js`
 
 ```javascript
 import * as get_value from './get_value.ts';
@@ -130,16 +137,16 @@ let value = get_value.getValue();
 export const final_value = `$${value.toFixed(2)}`;
 ```
 
-Now let's add the following to `main()`, right before the `Ok(())` at the bottom.
-
-We load our new module from the filesystem. The handle that `load_module` returns is used to give context to future calls.
-
-We use the returned handle to extract the const that it exports, and then we tell the compiler we'd like it as a string:
+Now let's add the following to `main()`, right before the `Ok(())` at the bottom:
 
 ```rust
 let use_value_handle = runtime.load_module(&Module::load("examples/medium.js")?)?;
 let final_value: String = runtime.get_value(&use_value_handle, "final_value")?;
 ```
+
+We load our new module from the filesystem - the handle that `load_module` returns is used to give context to future calls.
+
+We use the returned handle to extract the const that it exports, and then we tell the compiler we'd like it as a string:
 
 Finally, we can check that we received back the value we expected:
 
@@ -154,6 +161,9 @@ When we run our completed example, we should see a print out to the console:
 Our static module was able to be imported for use by another JS module, and the JS side's API was able to be accessed by our Rust backend.
 
 ## Conclusion
-Embedding a JS or TS component into Rust does not have to be difficult or time consuming. By leveraging API wrappers like rustyscript we can include a full-fledged runtime with very little learning curve or time investment. 
+
+Embedding a JS or TS component into Rust does not have to be difficult or time consuming.
+
+By leveraging API wrappers like rustyscript we can include a full-fledged runtime with very little learning curve or time investment. 
 
 This example's source code and more can be found on [rustyscript's github repository](https://github.com/rscarson/rustyscript)
