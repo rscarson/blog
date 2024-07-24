@@ -206,4 +206,4 @@ Embedding a JS or TS component into Rust does not have to be difficult or time-c
 
 By leveraging API wrappers like rustyscript we can include a full-fledged runtime with very little learning curve or time investment. 
 
-This example's source code and more can be found on [rustyscript's GitHub repository](https://github.com/rscarson/rustyscript)
+Over a dozen more examples can be found on [rustyscript's GitHub repository](https://github.com/rscarson/rustyscript)
