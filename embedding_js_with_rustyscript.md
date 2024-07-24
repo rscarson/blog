@@ -1,4 +1,4 @@
-# Embedding a Javascript or Typescript component into your Rust project using rustyscript
+# Embedding a Javascript or Typescript component into your Rust project
 
 If you need to integrate a scripted component into your latest project, don't worry; it does not need to be a complicated procedure.
 
@@ -9,7 +9,7 @@ However, the v8 engine it relies on (and by extension the Deno core itself) come
 
 Enter rustyscript - a Deno API wrapper designed to abstract away the v8 engine details, and allow you to operate directly on Rust types when working with javascript modules.
 
-## Enter rustyscript
+## Rustyscript -- Effortless JS integration for Rust
 [The rustyscript crate](https://crates.io/crates/rustyscript) is how I will be using the javascript runtime in this article - it is a Deno API wrapper for Rust that aims to prevent the common pitfalls and complications of using the v8 engine from Rust.
 
 It will take care of details such as: 
